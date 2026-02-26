@@ -44,27 +44,13 @@ body{
   margin-bottom:20px;
 }
 
-.hero p{
-  font-size:18px;
-  opacity:0.8;
-  max-width:600px;
-  margin:auto;
-}
-
-.cta-btn{
-  margin-top:30px;
-  padding:15px 30px;
-  font-size:16px;
-  border:none;
-  border-radius:8px;
-  background:#7c3aed;
-  color:white;
-  cursor:pointer;
-  transition:0.3s;
-}
-
-.cta-btn:hover{
-  background:#6d28d9;
+.badge{
+  display:inline-block;
+  margin-top:10px;
+  background:#ff4d4d;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:12px;
 }
 
 .generator{
@@ -95,10 +81,6 @@ input, select{
   cursor:pointer;
 }
 
-.generate-btn:disabled{
-  opacity:0.7;
-}
-
 #result{
   margin-top:20px;
   background:white;
@@ -106,38 +88,12 @@ input, select{
   padding:15px;
   border-radius:8px;
   text-align:left;
+  white-space:pre-line;
 }
 
-/* FEATURES */
-
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  width: 90%;
-  max-width: 900px;
-  margin: 60px auto;
-}
-
-.feature-box {
-  background: rgba(255,255,255,0.05);
-  padding: 30px;
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
-  transition: 0.3s;
-}
-
-.feature-box:hover {
-  transform: translateY(-5px);
-  background: rgba(255,255,255,0.08);
-}
-
-.feature-box h3 {
-  margin-bottom: 10px;
-}
-
-.feature-box p {
-  opacity: 0.8;
+.counter{
+  margin-bottom:15px;
+  font-weight:bold;
 }
 </style>
 </head>
@@ -146,14 +102,12 @@ input, select{
 
 <div class="hero">
   <h1>🚀 Crée des posts Telegram viraux en 10 secondes</h1>
-  <p>Une intelligence artificielle conçue pour augmenter ton engagement, attirer plus d’abonnés et monétiser ton audience.</p>
-  <button class="cta-btn" onclick="document.getElementById('generator').scrollIntoView({behavior:'smooth'})">
-    Tester gratuitement
-  </button>
+  <div class="badge">🔥 Version Premium Disponible</div>
 </div>
 
-<div class="generator" id="generator">
+<div class="generator">
   <h2>Panel Telegram AI</h2>
+  <div id="counter" class="counter"></div>
 
   <input id="theme" placeholder="Thème">
   <input id="topic" placeholder="Sujet">
@@ -170,36 +124,50 @@ input, select{
   <div id="result"></div>
 </div>
 
-<h2 style="margin-top:80px;">Pourquoi utiliser Panel Telegram AI ?</h2>
-
-<div class="features">
-
-  <div class="feature-box">
-    <h3>🔥 Plus d’engagement</h3>
-    <p>Des posts optimisés pour capter l’attention et augmenter les réactions sur Telegram.</p>
-  </div>
-
-  <div class="feature-box">
-    <h3>⚡ Gain de temps</h3>
-    <p>Crée du contenu en quelques secondes au lieu de passer des heures à rédiger.</p>
-  </div>
-
-  <div class="feature-box">
-    <h3>💰 Monétisation</h3>
-    <p>Attire plus d’abonnés et transforme ton audience en revenus.</p>
-  </div>
-
-</div>
-
 <script>
+
+let maxFree = 1;
+
+function updateCounter(){
+  let count = localStorage.getItem("usageCount");
+  count = count ? parseInt(count) : 0;
+
+  const counter = document.getElementById("counter");
+
+  if(count >= maxFree){
+    counter.innerHTML = "🔒 Limite gratuite atteinte";
+    counter.style.color = "#ff4d4d";
+  } else {
+    counter.innerHTML = "🎁 1 post gratuit restant";
+  }
+}
+
 async function generate(){
+
+  let count = localStorage.getItem("usageCount");
+  count = count ? parseInt(count) : 0;
+
+  const button = document.querySelector(".generate-btn");
+  const resultDiv = document.getElementById("result");
+
+  if(count >= maxFree){
+    resultDiv.innerHTML = \`
+      <div style="padding:20px;text-align:center;">
+        <h3>🚫 Version gratuite limitée à 1 post</h3>
+        <p>Passe Premium pour accès illimité.</p>
+        <a href="https://checkout.revolut.com/pay/b008278a-bdb2-43bc-92ff-bb01e8e75831" target="_blank"
+           style="display:inline-block;margin-top:15px;padding:12px 20px;
+           background:#7c3aed;color:white;border-radius:8px;text-decoration:none;">
+           🔓 Débloquer la version Premium – 19€
+        </a>
+      </div>
+    \`;
+    return;
+  }
 
   const theme = document.getElementById("theme").value;
   const topic = document.getElementById("topic").value;
   const tone = document.getElementById("tone").value;
-
-  const button = document.querySelector(".generate-btn");
-  const resultDiv = document.getElementById("result");
 
   button.disabled = true;
   button.innerText = "⏳ Génération en cours...";
@@ -214,17 +182,36 @@ async function generate(){
     });
 
     const data = await response.json();
-    resultDiv.innerText = data.result || data.error;
+
+    resultDiv.innerHTML = \`
+      <div id="generatedText">\${data.result || data.error}</div>
+      <button onclick="copyText()" 
+              style="margin-top:15px;padding:10px 15px;
+              background:#7c3aed;color:white;border:none;border-radius:6px;cursor:pointer;">
+              📋 Copier le post
+      </button>
+    \`;
+
+    count++;
+    localStorage.setItem("usageCount", count);
+    updateCounter();
 
   } catch (error) {
-
     resultDiv.innerText = "Erreur serveur.";
-
   }
 
   button.disabled = false;
   button.innerText = "Générer";
 }
+
+function copyText(){
+  const text = document.getElementById("generatedText").innerText;
+  navigator.clipboard.writeText(text);
+  alert("Post copié !");
+}
+
+window.onload = updateCounter;
+
 </script>
 
 </body>
