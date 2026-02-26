@@ -16,20 +16,6 @@ const openai = new OpenAI({
 
 
 
-  const password = req.query.password;
-
-  if (password !== PASSWORD) {
-    return res.send(`
-      <h2 style="text-align:center;margin-top:100px;">🔐 Accès privé</h2>
-      <form style="text-align:center;">
-        <input type="password" name="password" placeholder="Mot de passe"/>
-        <button type="submit">Entrer</button>
-      </form>
-    `);
-  }
-
-  next();
-});
 
 /* 🌍 PAGE PRINCIPALE */
 app.get("/", (req, res) => {
