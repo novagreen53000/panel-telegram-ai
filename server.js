@@ -152,6 +152,7 @@ async function generate(){
 </body>
 </html>
 `);
+});
   
 
 /* 🤖 GENERATION */
