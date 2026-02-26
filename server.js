@@ -19,12 +19,14 @@ const openai = new OpenAI({
 
 /* 🌍 PAGE PRINCIPALE */
 app.get("/", (req, res) => {
-  res.send(`
+res.send(`
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-<title>Panel Telegram AI</title>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Telegram AI</title>
+
 <style>
 body{
   margin:0;
@@ -35,7 +37,7 @@ body{
 }
 
 .hero{
-  padding:80px 20px;
+  padding:100px 20px 60px 20px;
 }
 
 .hero h1{
@@ -64,6 +66,7 @@ body{
 
 .cta-btn:hover{
   background:#6d28d9;
+  transform:scale(1.05);
 }
 
 .generator{
@@ -72,13 +75,13 @@ body{
   border-radius:12px;
   width:90%;
   max-width:500px;
-  margin:40px auto;
-  box-shadow:0 20px 40px rgba(0,0,0,0.3);
+  margin:60px auto;
+  box-shadow:0 20px 40px rgba(0,0,0,0.4);
 }
 
 input, select{
   width:100%;
-  padding:10px;
+  padding:12px;
   margin:10px 0;
   border-radius:6px;
   border:none;
@@ -92,6 +95,12 @@ input, select{
   background:#7c3aed;
   color:white;
   cursor:pointer;
+  transition:0.3s;
+}
+
+.generate-btn:hover{
+  background:#6d28d9;
+  transform:scale(1.03);
 }
 
 #result{
@@ -101,6 +110,39 @@ input, select{
   padding:15px;
   border-radius:8px;
   text-align:left;
+  white-space:pre-line;
+}
+
+.features{
+  padding:80px 20px;
+  background:#0f172a;
+}
+
+.features h2{
+  font-size:32px;
+  margin-bottom:50px;
+}
+
+.feature-box{
+  background:#1e293b;
+  padding:30px;
+  border-radius:12px;
+  width:260px;
+  transition:0.3s;
+}
+
+.feature-box:hover{
+  transform:translateY(-5px);
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+.feature-container{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:40px;
+  max-width:1000px;
+  margin:auto;
 }
 </style>
 </head>
@@ -117,6 +159,7 @@ input, select{
 
 <div class="generator" id="generator">
   <h2>Panel Telegram AI</h2>
+
   <input id="theme" placeholder="Thème">
   <input id="topic" placeholder="Sujet">
 
@@ -130,6 +173,29 @@ input, select{
   <button class="generate-btn" onclick="generate()">Générer</button>
 
   <div id="result"></div>
+</div>
+
+<div class="features">
+  <h2>Pourquoi utiliser Panel Telegram AI ?</h2>
+
+  <div class="feature-container">
+
+    <div class="feature-box">
+      <h3>🔥 Plus d'engagement</h3>
+      <p>Des posts optimisés pour capter l’attention et augmenter les réactions sur Telegram.</p>
+    </div>
+
+    <div class="feature-box">
+      <h3>⚡ Gain de temps</h3>
+      <p>Crée du contenu en quelques secondes au lieu de passer des heures à rédiger.</p>
+    </div>
+
+    <div class="feature-box">
+      <h3>💰 Monétisation</h3>
+      <p>Attire plus d’abonnés et transforme ton audience en revenus.</p>
+    </div>
+
+  </div>
 </div>
 
 <script>
@@ -152,7 +218,7 @@ async function generate(){
 </body>
 </html>
 `);
-});
+
   
 
 /* 🤖 GENERATION */
