@@ -108,7 +108,7 @@ Génère un post Telegram optimisé et engageant.
     res.status(500).json({ error: "Erreur génération" });
   }
 });
-
+console.log("API KEY loaded:", process.env.OPENAI_API_KEY ? "YES" : "NO");
 app.listen(PORT, () => {
   console.log("Serveur lancé");
 });
