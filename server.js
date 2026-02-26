@@ -95,6 +95,10 @@ input, select{
   cursor:pointer;
 }
 
+.generate-btn:disabled{
+  opacity:0.7;
+}
+
 #result{
   margin-top:20px;
   background:white;
@@ -102,6 +106,38 @@ input, select{
   padding:15px;
   border-radius:8px;
   text-align:left;
+}
+
+/* FEATURES */
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  width: 90%;
+  max-width: 900px;
+  margin: 60px auto;
+}
+
+.feature-box {
+  background: rgba(255,255,255,0.05);
+  padding: 30px;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
+}
+
+.feature-box:hover {
+  transform: translateY(-5px);
+  background: rgba(255,255,255,0.08);
+}
+
+.feature-box h3 {
+  margin-bottom: 10px;
+}
+
+.feature-box p {
+  opacity: 0.8;
 }
 </style>
 </head>
@@ -132,6 +168,27 @@ input, select{
   <button class="generate-btn" onclick="generate()">Générer</button>
 
   <div id="result"></div>
+</div>
+
+<h2 style="margin-top:80px;">Pourquoi utiliser Panel Telegram AI ?</h2>
+
+<div class="features">
+
+  <div class="feature-box">
+    <h3>🔥 Plus d’engagement</h3>
+    <p>Des posts optimisés pour capter l’attention et augmenter les réactions sur Telegram.</p>
+  </div>
+
+  <div class="feature-box">
+    <h3>⚡ Gain de temps</h3>
+    <p>Crée du contenu en quelques secondes au lieu de passer des heures à rédiger.</p>
+  </div>
+
+  <div class="feature-box">
+    <h3>💰 Monétisation</h3>
+    <p>Attire plus d’abonnés et transforme ton audience en revenus.</p>
+  </div>
+
 </div>
 
 <script>
@@ -174,7 +231,6 @@ async function generate(){
 </html>
   `);
 });
-
   
 
 /* 🤖 GENERATION */
