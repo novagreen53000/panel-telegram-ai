@@ -203,22 +203,30 @@ async function generate(){
   const theme = document.getElementById("theme").value;
   const topic = document.getElementById("topic").value;
   const tone = document.getElementById("tone").value;
+  const button = document.querySelector(".generate-btn");
+  const resultDiv = document.getElementById("result");
 
-  const response = await fetch("/generate", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({theme,topic,tone})
-  });
+  button.disabled = true;
+  button.innerText = "⏳ Génération en cours...";
+  resultDiv.innerText = "";
 
-  const data = await response.json();
-  document.getElementById("result").innerText = data.result || data.error;
+  try {
+    const response = await fetch("/generate", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({theme,topic,tone})
+    });
+
+    const data = await response.json();
+    resultDiv.innerText = data.result || data.error;
+
+  } catch (error) {
+    resultDiv.innerText = "Erreur serveur.";
+  }
+
+  button.disabled = false;
+  button.innerText = "Générer";
 }
-</script>
-
-</body>
-</html>
-`);
-});
 
   
 
