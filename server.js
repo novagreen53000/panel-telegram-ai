@@ -14,9 +14,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-/* 🔐 PROTECTION MOT DE PASSE */
-app.use((req, res, next) => {
-  if (req.path === "/generate") return next();
+
 
   const password = req.query.password;
 
