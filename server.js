@@ -22,161 +22,119 @@ app.use((req, res, next) => {
 
   if (password !== PASSWORD) {
     return res.send(`
-<!DOCTYPE html>
-<html>
-<head>
-<title>Accès Privé</title>
-<style>
-body {
-  margin:0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  color:white;
-}
+      <h2 style="text-align:center;margin-top:100px;">🔐 Accès privé</h2>
+      <form style="text-align:center;">
+        <input type="password" name="password" placeholder="Mot de passe"/>
+        <button type="submit">Entrer</button>
+      </form>
+    `);
+  }
 
-.card {
-  background: rgba(255,255,255,0.05);
-  padding:40px;
-  border-radius:20px;
-  backdrop-filter: blur(10px);
-  box-shadow:0 20px 40px rgba(0,0,0,0.4);
-  text-align:center;
-  width:300px;
-}
-
-input {
-  width:100%;
-  padding:12px;
-  margin-top:20px;
-  border-radius:10px;
-  border:none;
-  outline:none;
-}
-
-button {
-  width:100%;
-  padding:12px;
-  margin-top:20px;
-  border:none;
-  border-radius:10px;
-  background: linear-gradient(90deg, #6366f1, #8b5cf6);
-  color:white;
-  font-size:14px;
-  cursor:pointer;
-  transition:0.3s;
-}
-
-button:hover {
-  transform:scale(1.05);
-}
-</style>
-</head>
-<body>
-
-<div class="card">
-  <h2>🔐 Accès Privé</h2>
-  <form>
-    <input type="password" name="password" placeholder="Mot de passe"/>
-    <button type="submit">Entrer</button>
-  </form>
-</div>
-
-</body>
-</html>
-`);
+  next();
+});
 
 /* 🌍 PAGE PRINCIPALE */
 app.get("/", (req, res) => {
   res.send(`
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-<title>Telegram Growth AI</title>
+<title>Panel Telegram AI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {
+body{
   margin:0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
+  font-family:Arial, sans-serif;
+  background: linear-gradient(135deg,#0f172a,#1e293b);
   color:white;
   text-align:center;
 }
 
-.container {
-  max-width:600px;
-  margin:80px auto;
-  padding:40px;
-  background: rgba(255,255,255,0.05);
-  border-radius:20px;
-  backdrop-filter: blur(10px);
-  box-shadow:0 20px 40px rgba(0,0,0,0.4);
+.hero{
+  padding:80px 20px;
 }
 
-h1 {
-  font-size:28px;
+.hero h1{
+  font-size:42px;
   margin-bottom:20px;
 }
 
-input, select {
-  width:100%;
-  padding:12px;
-  margin:10px 0;
-  border-radius:10px;
-  border:none;
-  outline:none;
-  font-size:14px;
+.hero p{
+  font-size:18px;
+  opacity:0.8;
+  max-width:600px;
+  margin:auto;
 }
 
-button {
-  width:100%;
-  padding:14px;
-  margin-top:20px;
-  border:none;
-  border-radius:12px;
+.cta-btn{
+  margin-top:30px;
+  padding:15px 30px;
   font-size:16px;
-  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  border:none;
+  border-radius:8px;
+  background:#7c3aed;
   color:white;
   cursor:pointer;
   transition:0.3s;
 }
 
-button:hover {
-  transform:scale(1.05);
+.cta-btn:hover{
+  background:#6d28d9;
 }
 
-#result {
-  margin-top:30px;
+.generator{
+  background:#1e293b;
+  padding:40px;
+  border-radius:12px;
+  width:90%;
+  max-width:500px;
+  margin:40px auto;
+  box-shadow:0 20px 40px rgba(0,0,0,0.3);
+}
+
+input, select{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border-radius:6px;
+  border:none;
+}
+
+.generate-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:6px;
+  background:#7c3aed;
+  color:white;
+  cursor:pointer;
+}
+
+#result{
+  margin-top:20px;
   background:white;
   color:black;
-  padding:20px;
-  border-radius:15px;
+  padding:15px;
+  border-radius:8px;
   text-align:left;
-  white-space:pre-wrap;
-  animation:fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {opacity:0; transform:translateY(10px);}
-  to {opacity:1; transform:translateY(0);}
-}
-
-.loader {
-  margin-top:20px;
-  display:none;
 }
 </style>
 </head>
+
 <body>
 
-<div class="container">
-  <h1>🚀 Telegram Growth AI</h1>
+<div class="hero">
+  <h1>🚀 Crée des posts Telegram viraux en 10 secondes</h1>
+  <p>Une intelligence artificielle conçue pour augmenter ton engagement, attirer plus d’abonnés et monétiser ton audience.</p>
+  <button class="cta-btn" onclick="document.getElementById('generator').scrollIntoView({behavior:'smooth'})">
+    Tester gratuitement
+  </button>
+</div>
 
-  <input id="theme" placeholder="Thème (ex: crypto, business...)">
-  <input id="topic" placeholder="Sujet précis">
+<div class="generator" id="generator">
+  <h2>Panel Telegram AI</h2>
+  <input id="theme" placeholder="Thème">
+  <input id="topic" placeholder="Sujet">
 
   <select id="tone">
     <option>Professionnel</option>
@@ -185,9 +143,8 @@ button:hover {
     <option>Storytelling</option>
   </select>
 
-  <button onclick="generate()">Générer le post</button>
+  <button class="generate-btn" onclick="generate()">Générer</button>
 
-  <div class="loader" id="loader">⏳ Génération en cours...</div>
   <div id="result"></div>
 </div>
 
@@ -197,9 +154,6 @@ async function generate(){
   const topic = document.getElementById("topic").value;
   const tone = document.getElementById("tone").value;
 
-  document.getElementById("loader").style.display = "block";
-  document.getElementById("result").innerText = "";
-
   const response = await fetch("/generate", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
@@ -207,8 +161,6 @@ async function generate(){
   });
 
   const data = await response.json();
-
-  document.getElementById("loader").style.display = "none";
   document.getElementById("result").innerText = data.result || data.error;
 }
 </script>
@@ -216,44 +168,7 @@ async function generate(){
 </body>
 </html>
 `);
-🎯 Ensuite :
-
-Sauvegarde
-
-git add .
-
-git commit -m "UI premium"
-
-git push
-
-Render redeploie automatiquement.
-
-🔥 Résultat :
-
-Tu auras :
-
-Interface SaaS
-
-Animations
-
-Loader
-
-Design moderne
-
-Look crédible pour pub TikTok
-
-🚀 Étape suivante (après ça)
-
-On améliore le PROMPT pour qu’il devienne vraiment addictif.
-
-Puis :
-Landing page séparée.
-Puis :
-Stripe.
-
-Dis-moi quand c’est déployé.
-
-On transforme ton outil en machine à cash étape par étape 😈🔥
+  
 
 /* 🤖 GENERATION */
 app.post("/generate", async (req, res) => {
