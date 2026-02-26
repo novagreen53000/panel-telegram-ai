@@ -150,13 +150,10 @@ input, select{
   <div id="result"></div>
 </div>
 
-<!-- SECTION AVANTAGES -->
-
 <div class="features">
   <h2>Pourquoi utiliser Panel Telegram AI ?</h2>
 
   <div class="feature-container">
-
     <div class="feature-box">
       <h3>🔥 Plus d'engagement</h3>
       <p>Des posts optimisés pour capter l’attention et augmenter les réactions sur Telegram.</p>
@@ -171,7 +168,6 @@ input, select{
       <h3>💰 Monétisation</h3>
       <p>Attire plus d’abonnés et transforme ton audience en revenus.</p>
     </div>
-
   </div>
 </div>
 
@@ -179,11 +175,21 @@ input, select{
 
 let maxFree = 1;
 
+// 🔐 MODE ADMIN
+const urlParams = new URLSearchParams(window.location.search);
+const isAdmin = urlParams.get("admin") === "panel2026";
+
 function updateCounter(){
   let count = localStorage.getItem("usageCount");
   count = count ? parseInt(count) : 0;
 
   const counter = document.getElementById("counter");
+
+  if(isAdmin){
+    counter.innerHTML = "🛠 Mode Admin Activé (illimité)";
+    counter.style.color = "#00ff99";
+    return;
+  }
 
   if(count >= maxFree){
     counter.innerHTML = "🔒 Limite gratuite atteinte";
@@ -201,7 +207,7 @@ async function generate(){
   const button = document.querySelector(".generate-btn");
   const resultDiv = document.getElementById("result");
 
-  if(count >= maxFree){
+  if(count >= maxFree && !isAdmin){
     resultDiv.innerHTML = \`
       <div style="padding:20px;text-align:center;">
         <h3>🚫 Version gratuite limitée à 1 post</h3>
@@ -225,7 +231,6 @@ async function generate(){
   resultDiv.innerText = "";
 
   try {
-
     const response = await fetch("/generate", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
@@ -243,8 +248,11 @@ async function generate(){
       </button>
     \`;
 
-    count++;
-    localStorage.setItem("usageCount", count);
+    if(!isAdmin){
+      count++;
+      localStorage.setItem("usageCount", count);
+    }
+
     updateCounter();
 
   } catch (error) {
