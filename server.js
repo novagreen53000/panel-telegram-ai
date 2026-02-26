@@ -22,16 +22,72 @@ app.use((req, res, next) => {
 
   if (password !== PASSWORD) {
     return res.send(`
-      <h2 style="text-align:center;margin-top:100px;">🔐 Accès privé</h2>
-      <form style="text-align:center;">
-        <input type="password" name="password" placeholder="Mot de passe"/>
-        <button type="submit">Entrer</button>
-      </form>
-    `);
-  }
+<!DOCTYPE html>
+<html>
+<head>
+<title>Accès Privé</title>
+<style>
+body {
+  margin:0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  color:white;
+}
 
-  next();
-});
+.card {
+  background: rgba(255,255,255,0.05);
+  padding:40px;
+  border-radius:20px;
+  backdrop-filter: blur(10px);
+  box-shadow:0 20px 40px rgba(0,0,0,0.4);
+  text-align:center;
+  width:300px;
+}
+
+input {
+  width:100%;
+  padding:12px;
+  margin-top:20px;
+  border-radius:10px;
+  border:none;
+  outline:none;
+}
+
+button {
+  width:100%;
+  padding:12px;
+  margin-top:20px;
+  border:none;
+  border-radius:10px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  color:white;
+  font-size:14px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover {
+  transform:scale(1.05);
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>🔐 Accès Privé</h2>
+  <form>
+    <input type="password" name="password" placeholder="Mot de passe"/>
+    <button type="submit">Entrer</button>
+  </form>
+</div>
+
+</body>
+</html>
+`);
 
 /* 🌍 PAGE PRINCIPALE */
 app.get("/", (req, res) => {
