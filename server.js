@@ -1,7 +1,4 @@
-addEventListener("scroll",function(){
-reveals.forEach(function(section){
-const top=section.getBoundingClientRect().top;
-if(top<window.innerHeight-100){
+nnerHeight-100){
 section.classList.add("visible");
 }
 });
@@ -14,109 +11,91 @@ document.getElementById("subtitle").innerText="Premium tool for ambitious seller
 document.getElementById("auditBtn").innerText="Free Audit";
 document.getElementById("demoTitle").innerText="🎥 Demo";
 document.getElementById("reviewTitle").innerText="⭐ Client Reviews";
+document.getElementById("resultTitle").innerText="📊 Results";
 }else{
 document.getElementById("title").innerText="Dominez Amazon avec l'IA";
 document.getElementById("subtitle").innerText="Outil premium pour vendeurs ambitieux";
 document.getElementById("auditBtn").innerText="Audit Gratuit";
 document.getElementById("demoTitle").innerText="🎥 Démonstration";
 document.getElementById("reviewTitle").innerText="⭐ Avis Clients";
+document.getElementById("resultTitle").innerText="📊 Résultats";
 }
 }
+
 </script>
 
 </body>
 </html>`);
 });
 
-/* ================= AUDIT PAGE ================= */
+/* ================= AUDIT ================= */
 
-app.get("/audit", (req, res) => {
-  res.send(`<!DOCTYPE html>
+app.get("/audit",(req,res)=>{
+res.send(\`
+<!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Audit Amazon</title>
 <style>
-body{margin:0;font-family:Arial;background:#0f172a;color:white;text-align:center;padding:60px;}
-input{padding:12px;width:280px;border-radius:8px;border:none;margin-top:20px;}
+body{margin:0;font-family:Arial;background:#0f172a;color:white;text-align:center;padding:100px;}
+input{padding:12px;width:280px;border-radius:8px;border:none;}
 button{padding:12px 25px;border:none;border-radius:8px;background:#7c3aed;color:white;margin-top:20px;}
-.badge{background:#22d3ee;padding:8px 15px;border-radius:20px;display:inline-block;margin-bottom:20px;}
+.badge{background:#22d3ee;padding:8px 20px;border-radius:20px;display:inline-block;margin-bottom:20px;}
 </style>
 </head>
 <body>
+
 <div class="badge">FREE AMAZON AUDIT</div>
 <h1>Analysez votre ASIN</h1>
+
 <form action="/audit-result" method="POST">
 <input name="asin" required placeholder="Entrez votre ASIN">
-<br>
+<br><br>
 <button type="submit">Lancer Audit</button>
 </form>
+
 </body>
-</html>`);
+</html>
+\`);
 });
 
-/* ================= AUDIT RESULT ================= */
+/* ================= RESULT ================= */
 
-app.post("/audit-result", (req, res) => {
-
+app.post("/audit-result",(req,res)=>{
 audits++;
 
-const asin = req.body.asin || "";
-const lengthScore = asin.length;
-
-let seoScore = Math.min(100, 40 + lengthScore * 3 + Math.floor(Math.random()*20));
-let conversionScore = Math.min(100, 35 + lengthScore * 2 + Math.floor(Math.random()*25));
-let imageScore = Math.min(100, 50 + Math.floor(Math.random()*40));
-let globalScore = Math.floor((seoScore + conversionScore + imageScore) / 3);
-
-let recommendation =
-globalScore < 60 ? "Optimisation urgente recommandée." :
-globalScore < 80 ? "Bon potentiel, améliorations possibles." :
-"Listing performant, optimisation avancée possible.";
-
-res.send(`<!DOCTYPE html>
+res.send(\`
+<!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Résultat Audit</title>
+<title>Résultat</title>
 <style>
-body{margin:0;font-family:Arial;background:#0f172a;color:white;text-align:center;padding:40px;}
-.score{font-size:48px;margin:20px 0;color:#22d3ee;}
-.card{background:#111c33;padding:20px;border-radius:12px;margin:15px auto;max-width:400px;}
+body{margin:0;font-family:Arial;background:#0f172a;color:white;text-align:center;padding:100px;}
+.score{font-size:48px;color:#22d3ee;margin:20px;}
 button{padding:12px 25px;border:none;border-radius:8px;background:#7c3aed;color:white;margin-top:20px;}
 </style>
 </head>
 <body>
 
-<h1>Résultat Audit ASIN</h1>
-<div class="score">${globalScore}/100</div>
+<h1>Audit terminé</h1>
+<div class="score">\${Math.floor(Math.random()*40+60)}/100</div>
 
-<div class="card">SEO Score : ${seoScore}/100</div>
-<div class="card">Conversion Score : ${conversionScore}/100</div>
-<div class="card">Image Score : ${imageScore}/100</div>
-
-<p>${recommendation}</p>
-
-<button onclick="alert('Version Premium bientôt disponible')">Passer en Premium</button>
-<br><br>
-<a href="/">Retour</a>
+<button onclick="window.location.href='/'">Retour</button>
 
 </body>
-</html>`);
+</html>
+\`);
 });
 
 /* ================= ADMIN ================= */
 
-app.get("/admin-pro",(req,res)=>{
-res.json({
-visitors,
-audits,
-subscriptions,
-conversion: visitors>0 ? ((subscriptions/visitors)*100).toFixed(2) : 0
-});
+app.get("/admin",(req,res)=>{
+res.json({visitors,audits,subscriptions});
 });
 
-app.listen(PORT, () => console.log("SuppScale running stable"));
+app.listen(PORT,()=>console.log("Server running stable"));
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -150,22 +129,22 @@ setInterval(() => {
 /* ================= LANDING ================= */
 
 app.get("/", (req, res) => {
-  res.send(`<!DOCTYPE html>
+res.send(`<!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SuppScale - Audit Amazon IA</title>
-<meta name="description" content="Audit Amazon IA, optimisation listing, améliorez vos ventes Amazon grâce à l'intelligence artificielle.">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<title>SuppScale</title>
+
 <style>
 body{
 margin:0;
-font-family:'Poppins',sans-serif;
+font-family:Arial;
 background:linear-gradient(-45deg,#0f172a,#1e293b,#0f172a,#111827);
 background-size:400% 400%;
 animation:gradientMove 15s ease infinite;
 color:white;
 overflow-x:hidden;
+text-align:center;
 }
 
 @keyframes gradientMove{
@@ -174,17 +153,8 @@ overflow-x:hidden;
 100%{background-position:0% 50%;}
 }
 
-.lang-switch{
-position:fixed;
-top:20px;
-right:20px;
-font-weight:bold;
-cursor:pointer;
-}
-
 section{
 padding:100px 20px;
-text-align:center;
 opacity:0;
 transform:translateY(40px);
 transition:all 1s ease;
@@ -208,9 +178,9 @@ border:none;
 border-radius:12px;
 background:linear-gradient(90deg,#7c3aed,#22d3ee);
 color:white;
-font-weight:600;
+font-weight:bold;
 cursor:pointer;
-transition:0.3s;
+margin-top:20px;
 }
 
 .video-container{
@@ -235,9 +205,9 @@ gap:30px;
 
 .review-card{
 background:rgba(255,255,255,0.05);
-padding:30px;
+padding:25px;
 border-radius:20px;
-width:280px;
+width:260px;
 }
 
 .stats{
@@ -247,6 +217,22 @@ gap:50px;
 flex-wrap:wrap;
 font-size:28px;
 font-weight:bold;
+}
+
+.lang-switch{
+position:fixed;
+top:20px;
+right:20px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.badge{
+background:#22d3ee;
+padding:8px 20px;
+border-radius:20px;
+display:inline-block;
+margin-bottom:20px;
 }
 </style>
 </head>
@@ -259,6 +245,7 @@ font-weight:bold;
 </div>
 
 <section class="reveal">
+<div class="badge">AI POWERED</div>
 <h1 id="title">Dominez Amazon avec l'IA</h1>
 <p id="subtitle">Outil premium pour vendeurs ambitieux</p>
 <button onclick="window.location.href='/audit'" id="auditBtn">Audit Gratuit</button>
@@ -290,7 +277,7 @@ font-weight:bold;
 </section>
 
 <section class="reveal">
-<h2>📊 Résultats</h2>
+<h2 id="resultTitle">📊 Résultats</h2>
 <div class="stats">
 <div><span id="stat1">0</span>+ users</div>
 <div><span id="stat2">0</span>% ROI</div>
@@ -299,13 +286,15 @@ font-weight:bold;
 </section>
 
 <script>
+
 function animateValue(id,end,duration){
 let start=0;
+let range=end-start;
 let current=start;
 let increment=1;
-let stepTime=Math.floor(duration/end);
+let stepTime=Math.abs(Math.floor(duration/range));
 let obj=document.getElementById(id);
-let timer=setInterval(function(){
+let timer=setInterval(()=>{
 current+=increment;
 obj.textContent=current;
 if(current>=end){
@@ -319,4 +308,7 @@ animateValue("stat2",87,2000);
 animateValue("stat3",5300,2000);
 
 const reveals=document.querySelectorAll(".reveal");
-window.
+window.addEventListener("scroll",()=>{
+reveals.forEach(section=>{
+const top=section.getBoundingClientRect().top;
+if(top<window.
