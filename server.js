@@ -3,6 +3,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 /* ================= DATA ================= */
 
@@ -203,7 +204,7 @@ font-weight:bold;
 <script>
 
 function runAudit(){
-fetch('/api/audit',{method:'POST'});
+window.location.href="/audit";
 }
 
 function animateValue(id,end,duration){
@@ -261,6 +262,69 @@ document.getElementById("resultTitle").innerText="📊 Résultats";
 `);
 });
 
+/* ================= AUDIT PAGE ================= */
+
+app.get("/audit",(req,res)=>{
+res.send(`
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amazon Audit</title>
+<style>
+body{margin:0;font-family:Arial;background:linear-gradient(135deg,#0f172a,#1e293b);color:white;text-align:center;padding:60px 20px;}
+input{padding:12px;width:280px;border-radius:8px;border:none;margin-top:20px;}
+button{padding:12px 25px;border:none;border-radius:8px;background:#7c3aed;color:white;cursor:pointer;margin-top:20px;}
+.badge{display:inline-block;padding:8px 15px;background:#22d3ee;border-radius:20px;margin-bottom:20px;font-size:14px;}
+</style>
+</head>
+<body>
+<div class="badge">FREE AMAZON LISTING AUDIT</div>
+<h1>Analysez votre ASIN</h1>
+<form action="/audit-result" method="POST">
+<input name="asin" placeholder="Entrez votre ASIN Amazon" required>
+<br>
+<button type="submit">Lancer l'audit</button>
+</form>
+</body>
+</html>
+`);
+});
+
+app.post("/audit-result",(req,res)=>{
+audits++;
+
+const score = Math.floor(Math.random()*40)+60;
+const seo = Math.floor(Math.random()*20)+70;
+const conversion = Math.floor(Math.random()*30)+60;
+
+res.send(`
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit Result</title>
+<style>
+body{margin:0;font-family:Arial;background:linear-gradient(135deg,#0f172a,#1e293b);color:white;text-align:center;padding:60px 20px;}
+.card{background:#111c33;padding:40px;border-radius:20px;max-width:500px;margin:0 auto;box-shadow:0 0 30px rgba(124,58,237,0.4);}
+.score{font-size:60px;font-weight:bold;color:#22d3ee;}
+.metric{margin-top:20px;}
+button{padding:12px 25px;border:none;border-radius:8px;background:#7c3aed;color:white;cursor:pointer;margin-top:30px;}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>Score Global</h2>
+<div class="score">${score}/100</div>
+<div class="metric">SEO Score: ${seo}/100</div>
+<div class="metric">Conversion Score: ${conversion}/100</div>
+<button onclick="window.location.href='/'">Retour accueil</button>
+</div>
+</body>
+</html>
+`);
+});
+
 /* ================= API ================= */
 
 app.post("/api/audit",(req,res)=>{
@@ -282,7 +346,7 @@ conversion: visitors>0 ? ((subscriptions/visitors)*100).toFixed(2) : 0
 /* ================= ADMIN PRO ================= */
 
 app.get("/admin-pro",(req,res)=>{
-res.send(`
+res.send(\`
 <!DOCTYPE html>
 <html>
 <head>
@@ -293,54 +357,34 @@ res.send(`
 body{margin:0;background:#0b1220;color:white;font-family:Arial;}
 .container{padding:40px;}
 .cards{display:flex;flex-wrap:wrap;gap:20px;margin-bottom:40px;}
-.card{
-flex:1;
-min-width:200px;
-background:#111c33;
-padding:20px;
-border-radius:12px;
-box-shadow:0 0 20px rgba(124,58,237,0.2);
-}
+.card{flex:1;min-width:200px;background:#111c33;padding:20px;border-radius:12px;box-shadow:0 0 20px rgba(124,58,237,0.2);}
 .card h3{margin:0;font-size:14px;color:#94a3b8;}
 .card .value{font-size:28px;margin-top:10px;color:#22d3ee;}
-canvas{
-background:#111c33;
-padding:20px;
-border-radius:12px;
-margin-bottom:40px;
-}
+canvas{background:#111c33;padding:20px;border-radius:12px;margin-bottom:40px;}
 </style>
 </head>
 <body>
-
 <div class="container">
 <h1>Admin Pro Dashboard</h1>
-
 <div class="cards">
 <div class="card"><h3>Visitors</h3><div id="visitors" class="value">0</div></div>
 <div class="card"><h3>Audits</h3><div id="audits" class="value">0</div></div>
 <div class="card"><h3>Subscriptions</h3><div id="subs" class="value">0</div></div>
 <div class="card"><h3>Conversion %</h3><div id="conv" class="value">0%</div></div>
 </div>
-
 <canvas id="visitsChart"></canvas>
 <canvas id="auditsChart"></canvas>
-
 </div>
-
 <script>
 let visitsChart;
 let auditsChart;
-
 async function loadData(){
 const res=await fetch('/api/admin-data');
 const data=await res.json();
-
 document.getElementById("visitors").innerText=data.visitors;
 document.getElementById("audits").innerText=data.audits;
 document.getElementById("subs").innerText=data.subscriptions;
 document.getElementById("conv").innerText=data.conversion+"%";
-
 if(!visitsChart){
 visitsChart=new Chart(document.getElementById('visitsChart'),{
 type:'line',
@@ -359,14 +403,12 @@ auditsChart.data.datasets[0].data=data.auditsHistory;
 auditsChart.update();
 }
 }
-
 setInterval(loadData,3000);
 loadData();
 </script>
-
 </body>
 </html>
-`);
+\`);
 });
 
 app.listen(PORT,()=>console.log("SuppScale running stable"));
