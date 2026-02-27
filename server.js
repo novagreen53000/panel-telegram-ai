@@ -306,7 +306,6 @@ clearInterval(timer);
 animateValue("stat1",1200,2000);
 animateValue("stat2",87,2000);
 animateValue("stat3",5300,2000);
-
 const reveals=document.querySelectorAll(".reveal");
 window.addEventListener("scroll",()=>{
 reveals.forEach(section=>{
