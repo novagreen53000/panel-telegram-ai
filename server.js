@@ -31,16 +31,14 @@ setInterval(()=>{
 /* ================= LANDING ================= */
 
 app.get("/",(req,res)=>{
-res.send(`
-<!DOCTYPE html>
+res.send(`<!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SuppScale</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
 <style>
+
 body{
 margin:0;
 font-family:'Poppins',sans-serif;
@@ -83,12 +81,6 @@ font-size:48px;
 background:linear-gradient(90deg,#22d3ee,#7c3aed);
 -webkit-background-clip:text;
 color:transparent;
-animation:glow 2s infinite alternate;
-}
-
-@keyframes glow{
-from{text-shadow:0 0 10px rgba(124,58,237,0.4);}
-to{text-shadow:0 0 30px rgba(34,211,238,0.9);}
 }
 
 button{
@@ -99,13 +91,6 @@ background:linear-gradient(90deg,#7c3aed,#22d3ee);
 color:white;
 font-weight:600;
 cursor:pointer;
-transition:0.3s;
-box-shadow:0 0 20px rgba(124,58,237,0.5);
-}
-
-button:hover{
-transform:scale(1.05);
-box-shadow:0 0 40px rgba(34,211,238,0.8);
 }
 
 .video-container{
@@ -113,7 +98,6 @@ max-width:800px;
 margin:40px auto;
 border-radius:20px;
 overflow:hidden;
-box-shadow:0 0 40px rgba(124,58,237,0.4);
 }
 
 iframe{
@@ -131,16 +115,9 @@ gap:30px;
 
 .review-card{
 background:rgba(255,255,255,0.05);
-backdrop-filter:blur(10px);
 padding:30px;
 border-radius:20px;
 width:280px;
-transition:0.3s;
-}
-
-.review-card:hover{
-transform:translateY(-10px);
-box-shadow:0 0 30px rgba(124,58,237,0.5);
 }
 
 .stats{
@@ -151,6 +128,7 @@ flex-wrap:wrap;
 font-size:28px;
 font-weight:bold;
 }
+
 </style>
 </head>
 
@@ -209,12 +187,11 @@ function runAudit(){
 
 function animateValue(id,end,duration){
   let start=0;
-  let range=end-start;
   let current=start;
   let increment=1;
-  let stepTime=Math.abs(Math.floor(duration/range));
+  let stepTime=Math.floor(duration/end);
   let obj=document.getElementById(id);
-  let timer=setInterval(()=>{
+  let timer=setInterval(function(){
     current+=increment;
     obj.textContent=current;
     if(current>=end){
@@ -227,19 +204,15 @@ animateValue("stat1",1200,2000);
 animateValue("stat2",87,2000);
 animateValue("stat3",5300,2000);
 
-
-animateValue("stat1",1200,2000);
-animateValue("stat2",87,2000);
-animateValue("stat3",5300,2000);
-
 const reveals=document.querySelectorAll(".reveal");
-window.addEventListener("scroll",()=>{
-reveals.forEach(section=>{
-const top=section.getBoundingClientRect().top;
-if(top<window.innerHeight-100){
-section.classList.add("visible");
-}
-});
+window.addEventListener("scroll",function(){
+  reveals.forEach(function(section){
+    const top=section.getBoundingClientRect().
+top;
+    if(top<window.innerHeight-100){
+      section.classList.add("visible");
+    }
+  });
 });
 
 function setLang(lang){
@@ -263,157 +236,45 @@ document.getElementById("resultTitle").innerText="📊 Résultats";
 </script>
 
 </body>
-</html>
-`);
+</html>`);
 });
 
-/* ================= AUDIT PAGE ================= */
+/* ================= AUDIT ================= */
 
 app.get("/audit",(req,res)=>{
-res.send(`
-<!DOCTYPE html>
+res.send(`<!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amazon Audit</title>
+<title>Audit</title>
 <style>
-body{margin:0;font-family:Arial;background:linear-gradient(135deg,#0f172a,#1e293b);color:white;text-align:center;padding:60px 20px;}
+body{margin:0;font-family:Arial;background:#0f172a;color:white;text-align:center;padding:60px;}
 input{padding:12px;width:280px;border-radius:8px;border:none;margin-top:20px;}
-button{padding:12px 25px;border:none;border-radius:8px;background:#7c3aed;color:white;cursor:pointer;margin-top:20px;}
-.badge{display:inline-block;padding:8px 15px;background:#22d3ee;border-radius:20px;margin-bottom:20px;font-size:14px;}
+button{padding:12px 25px;border:none;border-radius:8px;background:#7c3aed;color:white;margin-top:20px;}
+.badge{background:#22d3ee;padding:8px 15px;border-radius:20px;display:inline-block;margin-bottom:20px;}
 </style>
 </head>
 <body>
-<div class="badge">FREE AMAZON LISTING AUDIT</div>
+<div class="badge">FREE AMAZON AUDIT</div>
 <h1>Analysez votre ASIN</h1>
 <form action="/audit-result" method="POST">
-<input name="asin" placeholder="Entrez votre ASIN Amazon" required>
+<input name="asin" required placeholder="Entrez votre ASIN">
 <br>
-<button type="submit">Lancer l'audit</button>
+<button type="submit">Lancer Audit</button>
 </form>
 </body>
-</html>
-`);
+</html>`);
 });
 
 app.post("/audit-result",(req,res)=>{
 audits++;
-
-const score = Math.floor(Math.random()*40)+60;
-const seo = Math.floor(Math.random()*20)+70;
-const conversion = Math.floor(Math.random()*30)+60;
-
-res.send(`
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Audit Result</title>
-<style>
-body{margin:0;font-family:Arial;background:linear-gradient(135deg,#0f172a,#1e293b);color:white;text-align:center;padding:60px 20px;}
-.card{background:#111c33;padding:40px;border-radius:20px;max-width:500px;margin:0 auto;box-shadow:0 0 30px rgba(124,58,237,0.4);}
-.score{font-size:60px;font-weight:bold;color:#22d3ee;}
-.metric{margin-top:20px;}
-button{padding:12px 25px;border:none;border-radius:8px;background:#7c3aed;color:white;cursor:pointer;margin-top:30px;}
-</style>
-</head>
-<body>
-<div class="card">
-<h2>Score Global</h2>
-<div class="score">${score}/100</div>
-<div class="metric">SEO Score: ${seo}/100</div>
-<div class="metric">Conversion Score: ${conversion}/100</div>
-<button onclick="window.location.href='/'">Retour accueil</button>
-</div>
-</body>
-</html>
-`);
+res.send("<h1>Audit effectué</h1><a href='/'>Retour</a>");
 });
 
-/* ================= API ================= */
-
-app.post("/api/audit",(req,res)=>{
-audits++;
-res.json({status:"ok"});
-});
-
-app.get("/api/admin-data",(req,res)=>{
-res.json({
-visitors,
-audits,
-subscriptions,
-visitsHistory,
-auditsHistory,
-conversion: visitors>0 ? ((subscriptions/visitors)*100).toFixed(2) : 0
-});
-});
-
-/* ================= ADMIN PRO ================= */
+/* ================= ADMIN ================= */
 
 app.get("/admin-pro",(req,res)=>{
-res.send(\`
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Pro</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-body{margin:0;background:#0b1220;color:white;font-family:Arial;}
-.container{padding:40px;}
-.cards{display:flex;flex-wrap:wrap;gap:20px;margin-bottom:40px;}
-.card{flex:1;min-width:200px;background:#111c33;padding:20px;border-radius:12px;box-shadow:0 0 20px rgba(124,58,237,0.2);}
-.card h3{margin:0;font-size:14px;color:#94a3b8;}
-.card .value{font-size:28px;margin-top:10px;color:#22d3ee;}
-canvas{background:#111c33;padding:20px;border-radius:12px;margin-bottom:40px;}
-</style>
-</head>
-<body>
-<div class="container">
-<h1>Admin Pro Dashboard</h1>
-<div class="cards">
-<div class="card"><h3>Visitors</h3><div id="visitors" class="value">0</div></div>
-<div class="card"><h3>Audits</h3><div id="audits" class="value">0</div></div>
-<div class="card"><h3>Subscriptions</h3><div id="subs" class="value">0</div></div>
-<div class="card"><h3>Conversion %</h3><div id="conv" class="value">0%</div></div>
-</div>
-<canvas id="visitsChart"></canvas>
-<canvas id="auditsChart"></canvas>
-</div>
-<script>
-let visitsChart;
-let auditsChart;
-async function loadData(){
-const res=await fetch('/api/admin-data');
-const data=await res.json();
-document.getElementById("visitors").innerText=data.visitors;
-document.getElementById("audits").innerText=data.audits;
-document.getElementById("subs").innerText=data.subscriptions;
-document.getElementById("conv").innerText=data.conversion+"%";
-if(!visitsChart){
-visitsChart=new Chart(document.getElementById('visitsChart'),{
-type:'line',
-data:{labels:data.visitsHistory.map((_,i)=>i),
-datasets:[{label:'Visitors',data:data.visitsHistory,borderColor:'#22d3ee'}]}
-});
-auditsChart=new Chart(document.getElementById('auditsChart'),{
-type:'bar',
-data:{labels:data.auditsHistory.map((_,i)=>i),
-datasets:[{label:'Audits',data:data.auditsHistory,backgroundColor:'#7c3aed'}]}
-});
-}else{
-visitsChart.data.datasets[0].data=data.visitsHistory;
-visitsChart.update();
-auditsChart.data.datasets[0].data=data.auditsHistory;
-auditsChart.update();
-}
-}
-setInterval(loadData,3000);
-loadData();
-</script>
-</body>
-</html>
-\`);
+res.send("<h1>Admin OK</h1>");
 });
 
-app.listen(PORT,()=>console.log("SuppScale running stable"));
+app.listen(PORT,()=>console.log("Server running stable"));
