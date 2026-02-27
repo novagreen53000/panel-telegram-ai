@@ -204,7 +204,7 @@ font-weight:bold;
 <script>
 
 function runAudit(){
-window.location.href="/audit";
+  window.location.href = "/audit";
 }
 
 function animateValue(id,end,duration){
