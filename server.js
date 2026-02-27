@@ -7,6 +7,17 @@ app.use(express.json());
 
 let visitors = 0;
 let audits = 0;
+let visitsHistory = [];
+let auditsHistory = [];
+
+setInterval(function() {
+  visitsHistory.push(visitors);
+  auditsHistory.push(audits);
+  if (visitsHistory.length > 20) {
+    visitsHistory.shift();
+    auditsHistory.shift();
+  }
+}, 5000);
 
 app.use(function(req, res, next) {
   visitors++;
@@ -14,101 +25,32 @@ app.use(function(req, res, next) {
 });
 
 /* =========================
-   LANDING PAGE FR/EN
+   LANDING
 ========================= */
 
 app.get("/", function(req, res) {
 
-  var html =
-"<!DOCTYPE html>" +
-"<html>" +
-"<head>" +
-"<meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
-"<title>SuppScale</title>" +
-"<style>" +
-"body{margin:0;font-family:Arial;background:#0a0f1c;color:white;text-align:center;}" +
-"header{display:flex;justify-content:space-between;padding:20px 40px;}" +
-".logo{font-weight:bold;color:#7c3aed;font-size:20px;}" +
-".lang{cursor:pointer;margin-left:10px;}" +
-".hero{padding:120px 20px;}" +
-"h1{font-size:40px;}" +
-"button{padding:12px 25px;background:#7c3aed;border:none;border-radius:8px;color:white;cursor:pointer;margin-top:20px;}" +
-".section{padding:60px 20px;}" +
-".card{background:#111827;padding:20px;border-radius:10px;margin:20px auto;max-width:400px;}" +
-".score{font-size:60px;color:#22d3ee;}" +
-"input,textarea{width:80%;padding:10px;margin:10px 0;border-radius:6px;border:none;}" +
-"</style>" +
-"</head>" +
-"<body>" +
+  res.send(`
+  <html>
+  <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuppScale</title>
+  <style>
+  body{margin:0;font-family:Arial;background:#0a0f1c;color:white;text-align:center;}
+  .hero{padding:120px 20px;}
+  h1{font-size:40px;}
+  button{padding:12px 25px;background:#7c3aed;border:none;border-radius:8px;color:white;cursor:pointer;margin-top:20px;}
+  </style>
+  </head>
+  <body>
+  <div class="hero">
+  <h1>SuppScale Premium</h1>
+  <button onclick="fetch('/api/audit',{method:'POST'})">Run Audit</button>
+  </div>
+  </body>
+  </html>
+  `);
 
-"<header>" +
-"<div class='logo'>SUPPSCALE</div>" +
-"<div>" +
-"<span class='lang' onclick='setLang(\"en\")'>EN</span> | " +
-"<span class='lang' onclick='setLang(\"fr\")'>FR</span>" +
-"</div>" +
-"</header>" +
-
-"<div class='hero'>" +
-"<h1 id='title'>Dominate Amazon Rankings</h1>" +
-"<p id='subtitle'>AI Optimization Tool for Serious Sellers</p>" +
-"<button id='cta' onclick='scrollToAudit()'>Run Free Audit</button>" +
-"</div>" +
-
-"<div class='section' id='audit'>" +
-"<h2 id='auditTitle'>Free Audit</h2>" +
-"<input id='product' placeholder='Product Title'>" +
-"<textarea id='details' placeholder='Bullet Points'></textarea>" +
-"<br>" +
-"<button id='generateBtn' onclick='runAudit()'>Generate Audit</button>" +
-"<div id='result'></div>" +
-"</div>" +
-
-"<script>" +
-
-"var lang='en';" +
-
-"function setLang(l){" +
-"lang=l;" +
-"if(l==='fr'){" +
-"document.getElementById('title').innerText='Dominez Amazon';" +
-"document.getElementById('subtitle').innerText='Outil IA pour vendeurs ambitieux';" +
-"document.getElementById('cta').innerText='Audit Gratuit';" +
-"document.getElementById('auditTitle').innerText='Audit Gratuit';" +
-"document.getElementById('generateBtn').innerText='Générer Audit';" +
-"document.getElementById('product').placeholder='Titre du produit';" +
-"document.getElementById('details').placeholder='Points forts';" +
-"} else {" +
-"document.getElementById('title').innerText='Dominate Amazon Rankings';" +
-"document.getElementById('subtitle').innerText='AI Optimization Tool for Serious Sellers';" +
-"document.getElementById('cta').innerText='Run Free Audit';" +
-"document.getElementById('auditTitle').innerText='Free Audit';" +
-"document.getElementById('generateBtn').innerText='Generate Audit';" +
-"document.getElementById('product').placeholder='Product Title';" +
-"document.getElementById('details').placeholder='Bullet Points';" +
-"}" +
-"}" +
-
-"function scrollToAudit(){document.getElementById('audit').scrollIntoView({behavior:'smooth'});}" +
-
-"async function runAudit(){" +
-"const response = await fetch('/api/audit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});" +
-"const data = await response.json();" +
-"var score=0;" +
-"var target=data.overall;" +
-"var interval=setInterval(function(){" +
-"score++;" +
-"document.getElementById('result').innerHTML=\"<div class='card'><div class='score'>\"+score+\"/100</div><p>SEO: \"+data.seo+\"</p><p>Conversion: \"+data.conversion+\"</p></div>\";" +
-"if(score>=target){clearInterval(interval);}" +
-"},20);" +
-"}" +
-
-"</script>" +
-
-"</body>" +
-"</html>";
-
-  res.send(html);
 });
 
 /* =========================
@@ -116,32 +58,116 @@ app.get("/", function(req, res) {
 ========================= */
 
 app.post("/api/audit", function(req, res) {
-
   audits++;
+  res.json({status:"ok"});
+});
 
-  var randomScore = Math.floor(Math.random() * 30) + 70;
-
+app.get("/api/admin-data", function(req, res) {
   res.json({
-    overall: randomScore,
-    seo: randomScore - 5,
-    conversion: randomScore + 3
+    visitors,
+    audits,
+    visitsHistory,
+    auditsHistory
   });
-
 });
 
 /* =========================
-   ADMIN
+   ADMIN DASHBOARD
 ========================= */
 
 app.get("/admin", function(req, res) {
 
-  res.send(
-  "<html><body style='background:#0a0f1c;color:white;text-align:center;padding:50px;font-family:Arial;'>" +
-  "<h1>Admin Dashboard</h1>" +
-  "<p>Total Visitors: " + visitors + "</p>" +
-  "<p>Total Audits: " + audits + "</p>" +
-  "</body></html>"
-  );
+res.send(`
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body{margin:0;font-family:Arial;background:#0a0f1c;color:white;}
+.container{padding:40px;}
+.cards{display:flex;gap:20px;flex-wrap:wrap;}
+.card{flex:1;background:#111827;padding:20px;border-radius:12px;min-width:200px;}
+.big{font-size:30px;color:#22d3ee;}
+canvas{background:#111827;padding:20px;border-radius:12px;margin-top:30px;}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>Admin Dashboard</h1>
+
+<div class="cards">
+  <div class="card">
+    <div>Total Visitors</div>
+    <div id="visitors" class="big">0</div>
+  </div>
+  <div class="card">
+    <div>Total Audits</div>
+    <div id="audits" class="big">0</div>
+  </div>
+</div>
+
+<canvas id="visitsChart"></canvas>
+<canvas id="auditsChart"></canvas>
+
+</div>
+
+<script>
+
+let visitsChart;
+let auditsChart;
+
+async function loadData(){
+  const res = await fetch('/api/admin-data');
+  const data = await res.json();
+
+  document.getElementById("visitors").innerText = data.visitors;
+  document.getElementById("audits").innerText = data.audits;
+
+  if(!visitsChart){
+    visitsChart = new Chart(document.getElementById('visitsChart'), {
+      type: 'line',
+      data: {
+        labels: data.visitsHistory.map((_,i)=>i),
+        datasets: [{
+          label: 'Visitors',
+          data: data.visitsHistory,
+          borderColor: '#22d3ee'
+        }]
+      }
+    });
+
+    auditsChart = new Chart(document.getElementById('auditsChart'), {
+      type: 'bar',
+      data: {
+        labels: data.auditsHistory.map((_,i)=>i),
+        datasets: [{
+          label: 'Audits',
+          data: data.auditsHistory,
+          backgroundColor: '#7c3aed'
+        }]
+      }
+    });
+
+  } else {
+    visitsChart.data.datasets[0].data = data.visitsHistory;
+    visitsChart.update();
+
+    auditsChart.data.datasets[0].data = data.auditsHistory;
+    auditsChart.update();
+  }
+}
+
+setInterval(loadData, 3000);
+loadData();
+
+</script>
+
+</body>
+</html>
+`);
 
 });
 
