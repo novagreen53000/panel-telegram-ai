@@ -208,20 +208,25 @@ function runAudit(){
 }
 
 function animateValue(id,end,duration){
-let start=0;
-let range=end-start;
-let current=start;
-let increment=1;
-let stepTime=Math.abs(Math.floor(duration/range));
-let obj=document.getElementById(id);
-let timer=setInterval(()=>{
-current+=increment;
-obj.textContent=current;
-if(current>=end){
-clearInterval(timer);
+  let start=0;
+  let range=end-start;
+  let current=start;
+  let increment=1;
+  let stepTime=Math.abs(Math.floor(duration/range));
+  let obj=document.getElementById(id);
+  let timer=setInterval(()=>{
+    current+=increment;
+    obj.textContent=current;
+    if(current>=end){
+      clearInterval(timer);
+    }
+  },stepTime);
 }
-},stepTime);
-}
+
+animateValue("stat1",1200,2000);
+animateValue("stat2",87,2000);
+animateValue("stat3",5300,2000);
+
 
 animateValue("stat1",1200,2000);
 animateValue("stat2",87,2000);
